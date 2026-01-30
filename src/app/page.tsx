@@ -8,9 +8,9 @@ export default async function Home() {
   const showDashboard = !!session || APP_CONFIG.isDebug;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="fixed inset-0 bg-gray-50 flex flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-50">
+      <header className="bg-white border-b flex-none z-50">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="bg-blue-600 p-2 rounded-lg">
@@ -62,9 +62,11 @@ export default async function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1">
+      <main className="flex-1 relative">
         {showDashboard ? (
-          <Dashboard />
+          <div className="absolute inset-0">
+            <Dashboard />
+          </div>
         ) : (
           <div className="max-w-4xl mx-auto py-20 px-4 text-center">
             <h2 className="text-4xl font-extrabold text-gray-900 mb-6">
@@ -88,7 +90,7 @@ export default async function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t py-8 px-4">
+      <footer className="bg-white border-t py-8 px-4 flex-none">
         <div className="max-w-7xl mx-auto text-center text-gray-500 text-sm">
           <p>© 2026 Occupancy Dashboard. Powered by Next.js & Google Calendar API.</p>
         </div>

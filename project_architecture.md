@@ -13,6 +13,7 @@ graph TD
     User[User/Browser] <--> Frontend[Next.js Frontend]
     Frontend <--> ServerActions[Next.js Server Actions]
     ServerActions <--> NextAuth[NextAuth.js]
+    ServerActions <--> TodoistAPI[Todoist iCal Feed]
     NextAuth <--> GoogleOAuth[Google OAuth 2.0]
     ServerActions <--> GoogleAPI[Google Calendar API]
     
@@ -26,6 +27,7 @@ graph TD
 - **Framework**: [Next.js 15+](https://nextjs.org/) (App Router)
 - **Authentication**: [NextAuth.js v5](https://authjs.dev/) (using Google Provider)
 - **API Integration**: [googleapis](https://www.npmjs.com/package/googleapis) for Google Calendar access.
+- **iCal Parsing**: [ts-ics](https://www.npmjs.com/package/ts-ics) for parsing Todoist task feeds.
 - **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Date Manipulation**: [date-fns](https://date-fns.org/)
@@ -52,7 +54,16 @@ Data fetching is handled via **Server Actions** to keep secrets (like API keys) 
     - It merges overlapping events *within each calendar* to calculate net occupancy hours per calendar.
 4.  **Response**: An array of `DayOccupancy` objects, each containing a list of `CalendarOccupancy` (with hours, color, and metadata), is returned to the client.
 
-### 3. Frontend Visualization
+### 3. Todoist Integration (Optional)
+Users can optionally visualize their tasks alongside their calendar events.
+
+1.  **URL Input**: The user provides their Todoist iCal subscription URL in the sidebar.
+2.  **Persistence**: The URL is saved in `localStorage` in the user's browser.
+3.  **Fetching**: The `Dashboard` component triggers the `getTodoistData(icalUrl)` server action.
+4.  **Parsing**: The server fetches the iCal feed and parses it using `ts-ics`, returning a map of tasks indexed by date.
+5.  **Visualization**: `DayCell` displays a task icon and count. Clicking a cell opens a `TaskModal` with the full task list for that day.
+
+### 4. Frontend Visualization
 The UI is built with a focus on usability and performance.
 
 ```mermaid

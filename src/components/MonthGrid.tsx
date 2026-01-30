@@ -4,18 +4,19 @@ import {
   startOfWeek, 
   endOfWeek, 
   eachDayOfInterval, 
-  format,
-  isSameMonth
+  format
 } from "date-fns";
 import { DayCell } from "./DayCell";
 import { DayOccupancy } from "@/lib/google-calendar";
+import { TodoistTask } from "@/lib/todoist-types";
 
 interface MonthGridProps {
   month: Date;
   occupancyData: Record<string, DayOccupancy>;
+  todoistTasks: Record<string, TodoistTask[]>;
 }
 
-export function MonthGrid({ month, occupancyData }: MonthGridProps) {
+export function MonthGrid({ month, occupancyData, todoistTasks }: MonthGridProps) {
   const start = startOfWeek(startOfMonth(month));
   const end = endOfWeek(endOfMonth(month));
   const days = eachDayOfInterval({ start, end });
@@ -37,6 +38,7 @@ export function MonthGrid({ month, occupancyData }: MonthGridProps) {
             date={day} 
             currentMonth={month}
             occupancy={occupancyData[day.toISOString()]}
+            tasks={todoistTasks[day.toISOString()]}
           />
         ))}
       </div>

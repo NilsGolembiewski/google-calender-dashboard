@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getCalendars } from "@/app/actions";
-import { ChevronDown, ChevronUp, Check } from "lucide-react";
+import { ChevronDown, ChevronUp, Check, Link2, ExternalLink } from "lucide-react";
 
 interface Calendar {
   id: string;
@@ -15,13 +15,21 @@ interface Calendar {
 interface CalendarSelectorProps {
   selectedIds: string[];
   onSelectionChange: (ids: string[]) => void;
+  todoistUrl: string;
+  onTodoistUrlChange: (url: string) => void;
 }
 
-export function CalendarSelector({ selectedIds, onSelectionChange }: CalendarSelectorProps) {
+export function CalendarSelector({ 
+  selectedIds, 
+  onSelectionChange,
+  todoistUrl,
+  onTodoistUrlChange
+}: CalendarSelectorProps) {
   const [calendars, setCalendars] = useState<Calendar[]>([]);
   const [loading, setLoading] = useState(true);
   const [showMyCalendars, setShowMyCalendars] = useState(true);
   const [showOtherCalendars, setShowOtherCalendars] = useState(true);
+  const [showTodoist, setShowTodoist] = useState(false);
 
   useEffect(() => {
     async function fetchCalendars() {
@@ -102,6 +110,49 @@ export function CalendarSelector({ selectedIds, onSelectionChange }: CalendarSel
 
   return (
     <div className="flex flex-col gap-6 p-4">
+      {/* Todoist Integration */}
+      <div>
+        <button 
+          onClick={() => setShowTodoist(!showTodoist)}
+          className="w-full flex items-center justify-between text-sm font-semibold text-gray-900 mb-1 px-2 group"
+        >
+          <div className="flex items-center gap-2">
+            <Link2 className="w-4 h-4 text-red-600" />
+            <span>Todoist Integration</span>
+            {!showTodoist && todoistUrl && (
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" title="Configured" />
+            )}
+          </div>
+          {showTodoist ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        </button>
+        
+        {showTodoist && (
+          <div className="px-2 space-y-2 mt-2">
+            <p className="text-xs text-gray-500 mb-2">
+              Enter your Todoist iCal subscription URL to show tasks in the calendar.
+            </p>
+            <input
+              type="text"
+              placeholder="https://ext.todoist.com/export/ical/..."
+              value={todoistUrl}
+              onChange={(e) => onTodoistUrlChange(e.target.value)}
+              className="w-full text-xs px-3 py-2 border rounded-md focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none transition-all"
+            />
+            <a 
+              href="https://todoist.com/app/settings/integrations" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-[10px] text-red-600 hover:underline flex items-center gap-1 mt-1"
+            >
+              Find your URL in Todoist Settings
+              <ExternalLink className="w-2.5 h-2.5" />
+            </a>
+          </div>
+        )}
+      </div>
+
+      <div className="h-px bg-gray-100 mx-2" />
+
       {/* My Calendars */}
       <div>
         <button 
