@@ -85,3 +85,40 @@ The overall security posture is **Strong** for a personal dashboard application,
 3.  **Rate Limiting**: Monitor Google Calendar API usage to prevent rate-limiting issues when many calendars are selected.
 4.  **CSP Header**: Implement a Content Security Policy to further mitigate XSS and unauthorized asset loading.
 5.  **Audit Dependencies**: Run `npm audit` regularly to identify known vulnerabilities in third-party packages.
+
+---
+
+## 8. Todoist Integration Analysis (Added 2026-01-30)
+
+### 8.1 Server-Side Request Forgery (SSRF)
+- **Status**: **Resolved** (Implemented 2026-01-30)
+- **Risk**: The server action `getTodoistData` in `src/app/actions.ts` accepts an arbitrary `icalUrl` and fetches it via `fetchTodoistTasks`. An attacker could provide internal URLs (e.g., `http://localhost:3000`, `http://169.254.169.254`) to probe or exploit internal services.
+- **Location**: `src/lib/todoist.ts` and `src/app/actions.ts`.
+- **Implementation**: 
+    - Added prefix validation (`https://ext.todoist.com/`).
+    - Added DNS resolution check to ensure the hostname resolves to a public IP address before fetching.
+    - Implemented in `src/lib/todoist.ts` via `validateTodoistUrl`.
+
+### 8.2 Unauthenticated Server Action Access
+- **Status**: **Resolved** (Implemented 2026-01-30)
+- **Risk**: Unlike other actions, `getTodoistData` does not check for a valid session. This allow unauthenticated users to trigger the server to fetch external or internal URLs, potentially leading to abuse or resource exhaustion.
+- **Location**: `src/app/actions.ts`.
+- **Implementation**: Added `await auth()` and `session.accessToken` check at the start of the `getTodoistData` action.
+
+### 8.3 Insecure Storage of Sensitive iCal URL
+- **Risk**: The Todoist iCal URL contains a secret token that grants access to the user's tasks. Storing this in `localStorage` in `src/components/Dashboard.tsx` makes it vulnerable to theft via Cross-Site Scripting (XSS).
+- **Location**: `src/components/Dashboard.tsx`.
+- **Recommendation**: 
+    - Consider storing the URL in a server-side session or a database.
+    - If `localStorage` must be used, implement a strict Content Security Policy (CSP) to mitigate XSS risks.
+
+### 8.4 Error Handling & Information Leakage
+- **Status**: **Resolved** (Implemented 2026-01-30)
+- **Risk**: In `src/lib/todoist.ts`, throwing `response.statusText` might leak internal server details or status information about the target URL to the client.
+- **Implementation**: 
+    - Server-side logging of detailed error messages (status code and text).
+    - Client-side generic error message ("Failed to fetch tasks").
+
+### 8.5 Parsing Robustness
+- **Risk**: iCal parsing using `ts-ics` is complex. Maliciously crafted iCal files could potentially exploit vulnerabilities in the parser.
+- **Recommendation**: Keep the `ts-ics` dependency updated and consider sandboxing the parsing logic.

@@ -7,6 +7,7 @@ A modern web application built with Next.js 15+ that helps you visualize your ti
 ## 🚀 Features
 
 - **Multi-Calendar Support**: View occupancy data for all your connected Google Calendars simultaneously.
+- **Todoist Integration**: Optionally connect your Todoist account via iCal subscription to see task counts and details directly in your calendar cells.
 - **Visual Progress Bars**: Each day shows color-coded bars representing the occupancy of individual calendars relative to a target business day.
 - **Infinite Scrolling**: Effortlessly navigate through your schedule with a smooth, infinite-loading calendar view.
 - **Server-Side Security**: Leveraging Next.js Server Actions and Auth.js (NextAuth.js v5) to keep your Google API tokens and data processing secure.
@@ -18,6 +19,7 @@ A modern web application built with Next.js 15+ that helps you visualize your ti
 - **Framework**: [Next.js 15+](https://nextjs.org/) (App Router)
 - **Authentication**: [Auth.js v5 (NextAuth)](https://authjs.dev/)
 - **API Integration**: [Google APIs Node.js Client](https://github.com/googleapis/google-api-python-client)
+- **iCal Parsing**: [ts-ics](https://www.npmjs.com/package/ts-ics) for type-safe Todoist integration.
 - **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Date Management**: [date-fns](https://date-fns.org/)
@@ -60,6 +62,15 @@ A modern web application built with Next.js 15+ that helps you visualize your ti
    npm run dev
    ```
    Open [http://localhost:3000](http://localhost:3000) to see the dashboard.
+
+## 📅 Todoist Integration
+
+To see your tasks alongside your calendar events:
+1. Go to your **Todoist Settings**.
+2. Navigate to **Integrations**.
+3. Scroll down to find your **Calendar Subscription URL (iCal)**.
+4. Copy the URL and paste it into the "Todoist Integration" field in the sidebar of the dashboard.
+5. Your tasks will be fetched automatically and persisted in your browser for future visits.
 
 ## 🏗️ Architecture
 

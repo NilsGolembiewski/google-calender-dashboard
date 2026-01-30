@@ -5,13 +5,15 @@ import { addMonths, startOfMonth, endOfMonth } from "date-fns";
 import { MonthGrid } from "./MonthGrid";
 import { getOccupancyData } from "@/app/actions";
 import { DayOccupancy } from "@/lib/google-calendar";
+import { TodoistTask } from "@/lib/todoist-types";
 import { useInView } from "react-intersection-observer";
 
 interface InfiniteCalendarProps {
   selectedCalendarIds: string[];
+  todoistTasks: Record<string, TodoistTask[]>;
 }
 
-export function InfiniteCalendar({ selectedCalendarIds }: InfiniteCalendarProps) {
+export function InfiniteCalendar({ selectedCalendarIds, todoistTasks }: InfiniteCalendarProps) {
   const [months, setMonths] = useState<Date[]>([
     startOfMonth(new Date()),
     addMonths(startOfMonth(new Date()), 1),
@@ -104,6 +106,7 @@ export function InfiniteCalendar({ selectedCalendarIds }: InfiniteCalendarProps)
           key={month.toISOString()} 
           month={month} 
           occupancyData={occupancyData} 
+          todoistTasks={todoistTasks}
         />
       ))}
       <div ref={ref} className="h-40 flex items-center justify-center bg-gray-50 border-t">
