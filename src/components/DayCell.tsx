@@ -1,6 +1,6 @@
 import { DayOccupancy } from "@/lib/google-calendar";
 import { TodoistTask } from "@/lib/todoist-types";
-import { format, isToday, isSameMonth } from "date-fns";
+import { format, isToday, isSameMonth, isWeekend } from "date-fns";
 import { useState, useRef } from "react";
 import { TaskModal } from "./TaskModal";
 import { ListTodo } from "lucide-react";
@@ -25,6 +25,7 @@ export function DayCell({ date, currentMonth, occupancy, tasks = [] }: DayCellPr
   const cellRef = useRef<HTMLDivElement>(null);
   const isCurrentMonth = isSameMonth(date, currentMonth);
   const isTodayDate = isToday(date);
+  const isWeekendDay = isWeekend(date);
 
   const total = occupancy?.total || 0;
   const calendars = occupancy?.calendars || [];
@@ -50,6 +51,7 @@ export function DayCell({ date, currentMonth, occupancy, tasks = [] }: DayCellPr
         className={cn(
           "h-32 border-r border-b p-2 flex flex-col transition-colors",
           !isCurrentMonth && "bg-gray-50 text-gray-400",
+          isCurrentMonth && isWeekendDay && !isTodayDate && "bg-amber-50/30",
           isTodayDate && "bg-blue-50/30",
           taskCount > 0 && "cursor-pointer hover:bg-gray-100/50"
         )}

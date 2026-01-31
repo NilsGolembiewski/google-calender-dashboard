@@ -17,8 +17,8 @@ interface MonthGridProps {
 }
 
 export function MonthGrid({ month, occupancyData, todoistTasks }: MonthGridProps) {
-  const start = startOfWeek(startOfMonth(month));
-  const end = endOfWeek(endOfMonth(month));
+  const start = startOfWeek(startOfMonth(month), { weekStartsOn: 1 });
+  const end = endOfWeek(endOfMonth(month), { weekStartsOn: 1 });
   const days = eachDayOfInterval({ start, end });
 
   return (
@@ -27,7 +27,7 @@ export function MonthGrid({ month, occupancyData, todoistTasks }: MonthGridProps
         {format(month, "MMMM yyyy")}
       </h2>
       <div className="grid grid-cols-7 border-l border-t">
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
           <div key={day} className="p-2 text-center text-xs font-bold text-gray-500 border-r border-b uppercase tracking-wider bg-gray-50">
             {day}
           </div>
